@@ -3,6 +3,7 @@
 *.pyc
 .idea/
 /.idea
+/files
 
 /logs/
 /.env
