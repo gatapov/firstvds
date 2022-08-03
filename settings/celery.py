@@ -1,5 +1,6 @@
 from celery import Celery
+from settings.env import CELERY_BROKER_URL
 
 
-celery_app = Celery('tasks', broker='redis://localhost:6379/0')
+celery_app = Celery('tasks', broker=CELERY_BROKER_URL)
 
