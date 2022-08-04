@@ -33,11 +33,43 @@ STORAGE=local
 
 Put a datafile (data.csv) into files folder
 
-Build and start docker 
+Start with docker compose:
 ```
 docker-compose build
 docker-compose up -d
 ```
+
+Start without docker compose:
+
+create virtualenv (python 3.9) and activate it
+```
+python3 -m venv env
+source env/bin/activate
+```
+
+Create db and db user
+
+Create .env file:
+
+```
+nano .env
+
+DATABASE_URL=postgresql+psycopg2://user:password@host:5432/fvds
+CELERY_BROKER_URL=localhost://redis:6379/0
+STORAGE=local
+
+```
+install requirements
+```
+pip install -r requiremets.txt
+```
+
+Run project
+
+```
+uvicorn main:app --reload
+```
+
 
 There are 3 endpoints:
 
