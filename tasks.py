@@ -8,7 +8,6 @@ from settings.celery import celery_app
 from storage import get_file_link
 from settings.env import STORAGE
 from db.model import Task
-import time
 
 
 logger = logging.getLogger(__name__)
@@ -30,15 +29,18 @@ def sum_task(self, file_name: str):
     df = pd.read_csv(file_link, delimiter=',')
     cols_list = list(df.columns.values)[0].split(',')[1::10]
     cols_list = list(map(lambda i: i.replace('"', ''), cols_list))
-    rows_list = []
+    sum_dict = {}
     for name, data in df.iterrows():
         row = list(data)[0].split(',')[1::10]
         row = list(map(lambda i: float(i.replace('"', '')) if i.replace('"', '') != '' else None, row))
-        rows_list.append(row)
+        row_dict = dict(zip(cols_list, row))
+        for key in row_dict:
+            if key in sum_dict and row_dict[key] is not None:
+                sum_dict[key] = sum_dict[key] + row_dict[key]
+            elif row_dict[key] is not None:
+                sum_dict.update({key: row_dict[key]})
 
-    for_df = dict(zip(cols_list, rows_list))
-    new_df = pd.DataFrame.from_dict(for_df)
-    result = dict(new_df.sum())
-
-    task = Task(celery_id=self.request.id, data=json.dumps(result))
+    task = Task(celery_id=self.request.id, data=json.dumps(sum_dict))
     task.save()
+
+

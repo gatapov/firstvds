@@ -8,3 +8,4 @@
 /logs/
 /.env
 /local.py
+/celerybeat-schedule
